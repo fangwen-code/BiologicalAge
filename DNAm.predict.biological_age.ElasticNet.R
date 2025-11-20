@@ -131,7 +131,13 @@ final_enet <- glmnet(
   family = "gaussian", 
   standardize = FALSE
 )
+                  
+# 保存模型文件
+saveRDS(final_enet, file = "final_elastic_net_model.rds")
 
+# 后续如需加载模型，可使用：
+# final_enet <- readRDS("final_elastic_net_model.rds")
+                  
 ## 模型评估
 # 针对测试集缺失值NA用训练集的均值插补, 因X_test_std已经用训练集的均值和sd进行标准化了，所以，现在的缺失值用0进行插补
 X_test_std_imputed <- X_test_std
@@ -191,5 +197,6 @@ key_features <- key_features[order(abs(key_features$Coefficient), decreasing = T
 cat("模型中关键特征数量（非零系数）：", nrow(key_features), "\n")
 cat("前10个关键特征（按系数绝对值排序）：\n")
 print(head(key_features, 10))
+
 
 write.table(key_features, "ENet_key_features.txt", sep = "\t", row.names = FALSE, quote = FALSE)

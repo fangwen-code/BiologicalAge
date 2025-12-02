@@ -48,22 +48,22 @@ def choose_options(trial, X_train_std, y_train, n_fold, stratify_labels):
 ### prepare data
 # DMPs
 dmp_df = pd.read_csv("age_related_DMPs.txt", sep="\t")
-dmp_cpgs = dmp_df["CpG"].tolist() # 4911 cpgs
+dmp_cpgs = dmp_df["CpG"].tolist()
 
 # beta matrix
 beta_df = pd.read_csv("CpG.value.txt", sep="\t", index_col=0)
 beta_df = beta_df.T # row: sample; col: cpg
-beta_df = beta_df[dmp_cpgs] # 440 4911
+beta_df = beta_df[dmp_cpgs] 
 
 # pheno
 pheno_df = pd.read_csv("pheno.info.txt", sep="\t", index_col=0)
-common_samples = list(set(beta_df.index) & set(pheno_df.index)) # 435 samples
+common_samples = list(set(beta_df.index) & set(pheno_df.index)) 
 beta_df = beta_df.loc[common_samples]
 pheno_df = pheno_df.loc[common_samples]
 
 y = pheno_df["Age"].values
 covar = pheno_df["Gender2"].values.reshape(-1,1)
-X = np.hstack([beta_df.values, covar]) # 435 samples, 4911 cpgs + 1 covariate
+X = np.hstack([beta_df.values, covar]) 
 
 covariate_names = ["Gender"]
 feature_names = dmp_cpgs + covariate_names
@@ -75,11 +75,11 @@ with open("covariate_names.txt", "w") as f:
 
 # 分层抽样
 stratify_labels = pheno_df["Age_group"].values.ravel()
-#print(stratify_labels) # (435,)
+#print(stratify_labels) 
 
 #print(pheno_df["Age_group"].value_counts())
 X_train, X_test, y_train, y_test, stratify_labels_train, stratify_labels_test = train_test_split(X, y, stratify_labels, test_size=0.2, random_state=42, stratify=stratify_labels)
-# print(X_train.shape, X_test.shape, y_train.shape, y_test.shape) # (348, 4912) (87, 4912) (348,) (87,)
+# print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
 # missing value
 X_train_imputed = pd.DataFrame(X_train).fillna(pd.DataFrame(X_train).mean())

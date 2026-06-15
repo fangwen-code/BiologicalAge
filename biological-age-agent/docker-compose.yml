@@ -1,0 +1,16 @@
+# docker-compose.yml
+# 使用: docker compose up -d
+# 启动后访问 http://localhost:8000
+
+services:
+  bio-age:
+    build: .
+    container_name: biological-age-agent
+    ports:
+      - "8000:8000"
+    volumes:
+      # 挂载 .env（API Key 等配置）到容器内
+      - ./.env:/app/.env:ro
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
